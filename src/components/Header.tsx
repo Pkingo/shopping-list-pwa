@@ -10,7 +10,12 @@ import {
   Typography,
   useMediaQuery,
 } from "@material-ui/core";
-import { Login, Logout, Settings } from "@material-ui/icons";
+import {
+  Login,
+  Logout,
+  Settings,
+  FormatListBulleted,
+} from "@material-ui/icons";
 import { useState } from "react";
 import { styled } from "@material-ui/core/styles";
 import { AccountCircle } from "@material-ui/icons";
@@ -30,9 +35,9 @@ export const Header = ({
   isLoggedIn: boolean;
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const collection = useCollection();
+  const { collection, clearCollection } = useCollection();
   const isLarge = useMediaQuery("(min-width:500px)");
-  const { name } = collection.data();
+  const name = collection?.data?.().name || "";
   const isOpen = Boolean(anchorEl);
 
   const onSettingsClicked = () => {
@@ -42,14 +47,20 @@ export const Header = ({
     setAnchorEl(null);
     onLogout();
   };
+  const onSwitchListClicked = () => {
+    clearCollection();
+    setAnchorEl(null);
+  };
   return (
     <AppBar position="static">
       <Toolbar>
         <Stack direction="row" gap={2} alignItems="baseline">
-          {isLarge && (
-            <Typography variant="h3">Brærspilsminitersiet</Typography>
+          <Typography variant="h3">
+            {isLarge || !name ? "Brærspilsminitersiet" : name}
+          </Typography>
+          {isLarge && name && (
+            <Typography variant="overline">{name}</Typography>
           )}
-          <Typography variant={isLarge ? "overline" : "h3"}>{name}</Typography>
         </Stack>
         <ProfileWrapper>
           {isLoggedIn ? (
@@ -83,6 +94,12 @@ export const Header = ({
                     <Settings fontSize="small" />
                   </ListItemIcon>
                   <ListItemText>Settings</ListItemText>
+                </MenuItem>
+                <MenuItem onClick={onSwitchListClicked}>
+                  <ListItemIcon>
+                    <FormatListBulleted fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Skift liste</ListItemText>
                 </MenuItem>
                 <MenuItem onClick={onLogoutClicked}>
                   <ListItemIcon>

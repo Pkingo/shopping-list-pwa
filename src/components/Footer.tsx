@@ -19,11 +19,13 @@ export const Footer = () => {
   const [showModal, setShowModal] = useState(false);
   const [name, setName] = useState("");
   const closeModal = () => setShowModal(false);
-  const { id: collectionId } = useCollection();
+  const { collection } = useCollection();
   const addItem = () => {
-    addShoppingItem(name, collectionId);
-    setName("");
-    closeModal();
+    if (collection?.id) {
+      addShoppingItem(name, collection.id);
+      setName("");
+      closeModal();
+    }
   };
   return (
     <>

@@ -5,7 +5,10 @@ import { CollectionDocument } from "../types/Collection";
 
 const COLLECTION_ID_KEY = "COLLECTION_ID_KEY";
 
-const CollectionContext = createContext<CollectionDocument | null>(null);
+const CollectionContext = createContext<{
+  collection: CollectionDocument | null;
+  clearCollection: () => void;
+} | null>({ collection: null, clearCollection: () => {} });
 
 export const CollectionProvider: FC = ({ children }) => {
   const [collection, setCollection] = useState<CollectionDocument | null>(null);
@@ -22,15 +25,16 @@ export const CollectionProvider: FC = ({ children }) => {
     localStorage.setItem(COLLECTION_ID_KEY, collection.id);
     setCollection(collection);
   };
-  const hasCollection = Boolean(collection);
+  const hasCollection = Boolean(localStorage.getItem(COLLECTION_ID_KEY));
+  const clearCollection = () => {
+    localStorage.removeItem(COLLECTION_ID_KEY);
+    setCollection(null);
+  };
 
   return (
-    <CollectionContext.Provider value={collection}>
-      {hasCollection ? (
-        children
-      ) : (
-        <CollectionModal isOpen onSelect={onSelect} />
-      )}
+    <CollectionContext.Provider value={{ collection, clearCollection }}>
+      {children}
+      {!hasCollection && <CollectionModal isOpen onSelect={onSelect} />}
     </CollectionContext.Provider>
   );
 };
