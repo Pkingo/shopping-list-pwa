@@ -1,25 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Stack } from "@material-ui/core";
+import { useMachine } from "@xstate/react";
+import { CheckList } from "./components/CheckList/CheckList";
+import { Footer } from "./components/Footer";
+import { Header } from "./components/Header";
+import { Unauthorized } from "./components/Unauthorized";
+import { authMachine } from "./machines/authMachine";
 
 function App() {
+  const [state, send] = useMachine(authMachine);
+  const isLoggedIn = state.matches("loggedIn");
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Stack>
+      <Header
+        onLogin={() => send("LOGIN")}
+        onLogout={() => send("LOGOUT")}
+        isLoggedIn={isLoggedIn}
+      />
+      {isLoggedIn ? <CheckList /> : <Unauthorized />}
+      {isLoggedIn && <Footer />}
+    </Stack>
   );
 }
 
