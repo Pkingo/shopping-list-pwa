@@ -9,6 +9,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import "./global.css";
 import { ShoppingProvider } from "./contexts/shoppingContext";
+import { CollectionProvider } from "./contexts/CollectionSelector";
 
 if (process.env.NODE_ENV === "development") {
   require("dotenv");
@@ -29,9 +30,11 @@ ReactDOM.render(
   <React.StrictMode>
     <FirebaseContext.Provider value={{ app, database }}>
       <ThemeProvider theme={theme}>
-        <ShoppingProvider collectionId="YlrlVIxOO7PvC3ffPkIY">
-          <App />
-        </ShoppingProvider>
+        <CollectionProvider>
+          <ShoppingProvider>
+            <App />
+          </ShoppingProvider>
+        </CollectionProvider>
       </ThemeProvider>
     </FirebaseContext.Provider>
   </React.StrictMode>,

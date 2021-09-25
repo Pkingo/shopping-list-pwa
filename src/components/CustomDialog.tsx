@@ -16,8 +16,8 @@ const useStyles = makeStyles({
 });
 
 export const CustomDialog: FC<{
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen?: boolean;
+  onClose?: () => void;
   title?: string;
   action?: React.ReactElement;
 }> = ({ isOpen, onClose, action, title, children }) => {
@@ -25,7 +25,7 @@ export const CustomDialog: FC<{
   return (
     <Dialog
       className={classes.root}
-      open={isOpen}
+      open={Boolean(isOpen)}
       onClose={onClose}
       aria-labelledby="responsive-dialog-title"
     >

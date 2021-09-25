@@ -5,15 +5,16 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Stack,
   Toolbar,
   Typography,
+  useMediaQuery,
 } from "@material-ui/core";
 import { Login, Logout, Settings } from "@material-ui/icons";
 import { useState } from "react";
 import { styled } from "@material-ui/core/styles";
 import { AccountCircle } from "@material-ui/icons";
-import { useMachine } from "@xstate/react";
-import { authMachine } from "../machines/authMachine";
+import { useCollection } from "../contexts/CollectionSelector";
 
 const ProfileWrapper = styled("div")`
   margin-left: auto;
@@ -29,6 +30,9 @@ export const Header = ({
   isLoggedIn: boolean;
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const collection = useCollection();
+  const isLarge = useMediaQuery("(min-width:500px)");
+  const { name } = collection.data();
   const isOpen = Boolean(anchorEl);
 
   const onSettingsClicked = () => {
@@ -41,7 +45,12 @@ export const Header = ({
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h3">Brærspilsminitersiet</Typography>
+        <Stack direction="row" gap={2} alignItems="baseline">
+          {isLarge && (
+            <Typography variant="h3">Brærspilsminitersiet</Typography>
+          )}
+          <Typography variant={isLarge ? "overline" : "h3"}>{name}</Typography>
+        </Stack>
         <ProfileWrapper>
           {isLoggedIn ? (
             <>

@@ -4,6 +4,7 @@ import { Add as AddIcon } from "@material-ui/icons";
 import { addShoppingItem } from "../db/shopping";
 import { useState } from "react";
 import { CustomDialog } from "./CustomDialog";
+import { useCollection } from "../contexts/CollectionSelector";
 
 const StyledFab = styled(Fab)({
   position: "absolute",
@@ -18,15 +19,16 @@ export const Footer = () => {
   const [showModal, setShowModal] = useState(false);
   const [name, setName] = useState("");
   const closeModal = () => setShowModal(false);
+  const { id: collectionId } = useCollection();
   const addItem = () => {
-    addShoppingItem(name, "YlrlVIxOO7PvC3ffPkIY");
+    addShoppingItem(name, collectionId);
     setName("");
     closeModal();
   };
   return (
     <>
       <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
-        <Toolbar>
+        <Toolbar sx={{ flexDirection: "column" }}>
           <StyledFab
             onClick={() => setShowModal(true)}
             color="secondary"
