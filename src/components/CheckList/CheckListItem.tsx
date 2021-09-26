@@ -30,9 +30,10 @@ export const CheckListItem: FC<{
       >
         <ListItemIcon>
           <Checkbox
+            color="secondary"
             edge="start"
             checked={isBought}
-            icon={<CheckBoxOutlineBlank color="primary" />}
+            icon={<CheckBoxOutlineBlank color="secondary" />}
             tabIndex={-1}
             inputProps={{ "aria-labelledby": labelId }}
           />

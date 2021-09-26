@@ -20,6 +20,7 @@ import { useState } from "react";
 import { styled } from "@material-ui/core/styles";
 import { AccountCircle } from "@material-ui/icons";
 import { useCollection } from "../contexts/CollectionSelector";
+import { SettingsModal } from "./Settings";
 
 const ProfileWrapper = styled("div")`
   margin-left: auto;
@@ -35,12 +36,14 @@ export const Header = ({
   isLoggedIn: boolean;
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [showSettings, setShowSettings] = useState(false);
   const { collection, clearCollection } = useCollection();
   const isLarge = useMediaQuery("(min-width:500px)");
   const name = collection?.data?.().name || "";
   const isOpen = Boolean(anchorEl);
 
   const onSettingsClicked = () => {
+    setShowSettings(true);
     setAnchorEl(null);
   };
   const onLogoutClicked = () => {
@@ -116,6 +119,10 @@ export const Header = ({
           )}
         </ProfileWrapper>
       </Toolbar>
+      <SettingsModal
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+      />
     </AppBar>
   );
 };

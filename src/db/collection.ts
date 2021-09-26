@@ -5,8 +5,11 @@ import {
   query,
   getDoc,
   doc,
+  updateDoc,
+  addDoc,
+  deleteDoc,
 } from "firebase/firestore";
-import { CollectionDocument } from "../types/Collection";
+import { Collection, CollectionDocument } from "../types/Collection";
 
 const DATABASE_NAME = "collection";
 
@@ -29,4 +32,27 @@ export const getCollectionById = async (collectionId: string) => {
   const db = getFirestore();
   const collectionDoc = await getDoc(doc(db, DATABASE_NAME, collectionId));
   return collectionDoc as CollectionDocument;
+};
+
+export const updateCollection = (
+  documentId: string,
+  data: Partial<Collection>
+) => {
+  const db = getFirestore();
+  updateDoc(doc(db, DATABASE_NAME, documentId), data);
+};
+
+export const addCollection = (name: string) => {
+  const db = getFirestore();
+  addDoc(collection(db, DATABASE_NAME), { name });
+};
+
+export const deleteCollection = async (documentId: string) => {
+  const db = getFirestore();
+  try {
+    await deleteDoc(doc(db, "shopping-list", documentId));
+    await deleteDoc(doc(db, DATABASE_NAME, documentId));
+  } catch (e) {
+    console.log("could not delete", e);
+  }
 };

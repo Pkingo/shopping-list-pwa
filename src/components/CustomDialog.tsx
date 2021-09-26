@@ -9,6 +9,9 @@ import { makeStyles } from "@material-ui/styles";
 
 const useStyles = makeStyles({
   root: {
+    "& .MuiDialog-container": {
+      alignItems: "start",
+    },
     "& .MuiPaper-root": {
       minWidth: "50%",
     },
