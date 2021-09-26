@@ -1,10 +1,10 @@
 import { Button, TextField, Stack } from "@material-ui/core";
-import {
-  Delete as DeleteIcon,
-  DriveFileRenameOutline,
-} from "@material-ui/icons";
-import { useCollection } from "../contexts/CollectionSelector";
+import { Delete as DeleteIcon, Edit as EditIcon } from "@material-ui/icons";
+import { FormEvent } from "react";
+import { useCollections } from "../contexts/Collections";
+import { updateCollection } from "../db/collection";
 import { CustomDialog } from "./CustomDialog";
+import { SectionHeader } from "./SectionHeader";
 
 export const SettingsModal = ({
   isOpen,
@@ -13,8 +13,17 @@ export const SettingsModal = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
-  const { collection } = useCollection();
-  const name = collection?.data().name || "";
+  const { selectedCollection } = useCollections();
+  const name = selectedCollection?.data().name || "";
+  const onRenameSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const value = event.currentTarget["rename"].value;
+    if (!value || value === name) {
+      return;
+    }
+    updateCollection(selectedCollection?.id || "", { name: value });
+    onClose();
+  };
   return (
     <CustomDialog
       isOpen={isOpen}
@@ -22,32 +31,33 @@ export const SettingsModal = ({
       title={`Indstillinger for ${name}`}
     >
       <Stack gap={2}>
-        <Stack
-          direction="row"
-          gap={1}
-          alignItems="baseline"
-          justifyContent="space-between"
-        >
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Liste navn"
-            defaultValue={name}
-            variant="standard"
-          />
-          <Button
-            sx={{ height: "max-content" }}
-            size="small"
-            variant="contained"
-            startIcon={<DriveFileRenameOutline />}
-            color="primary"
-          >
-            Omdøb
+        <form onSubmit={onRenameSubmit}>
+          <Stack>
+            <SectionHeader Icon={EditIcon} title="Liste navn" />
+            <TextField
+              id="rename"
+              autoFocus
+              margin="none"
+              defaultValue={name}
+              variant="standard"
+            />
+            <Button
+              sx={{ mt: 2 }}
+              size="small"
+              variant="contained"
+              color="primary"
+              type="submit"
+            >
+              Omdøb
+            </Button>
+          </Stack>
+        </form>
+        <Stack>
+          <SectionHeader Icon={DeleteIcon} title="Slet liste" />
+          <Button color="error" variant="outlined">
+            Slet
           </Button>
         </Stack>
-        <Button color="warning" variant="outlined" startIcon={<DeleteIcon />}>
-          Slet
-        </Button>
       </Stack>
     </CustomDialog>
   );

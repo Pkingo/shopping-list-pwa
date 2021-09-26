@@ -9,33 +9,23 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import { useEffect, useState } from "react";
-import { subscribeToCollectionDocuments } from "../db/collection";
-import { CollectionDocument } from "../types/Collection";
+import { useCollections } from "../contexts/Collections";
 import { CustomDialog } from "./CustomDialog";
 
-export const CollectionModal = ({
-  isOpen,
-  onSelect,
-}: {
-  isOpen: boolean;
-  onSelect: (collection: CollectionDocument) => void;
-}) => {
-  const [collections, setCollections] = useState<CollectionDocument[]>([]);
-  useEffect(() => {
-    return subscribeToCollectionDocuments(setCollections);
-  }, []);
+export const CollectionModal = () => {
+  const { selectedCollection, selectCollection, collections } =
+    useCollections();
   const createNewList = (event: any) => {
     console.log({ event });
   };
   return (
-    <CustomDialog isOpen={isOpen}>
+    <CustomDialog isOpen={!selectedCollection}>
       <nav>
         <Typography variant="h3">Vælg en liste</Typography>
         <List>
           {collections.map((collection) => (
             <ListItem disablePadding key={collection.id}>
-              <ListItemButton onClick={() => onSelect(collection)}>
+              <ListItemButton onClick={() => selectCollection(collection.id)}>
                 <ListItemText>{collection.data().name}</ListItemText>
               </ListItemButton>
             </ListItem>

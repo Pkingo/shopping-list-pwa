@@ -4,7 +4,7 @@ import { CheckList } from "./components/CheckList/CheckList";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
 import { Unauthorized } from "./components/Unauthorized";
-import { CollectionProvider } from "./contexts/CollectionSelector";
+import { CollectionsProvider } from "./contexts/Collections";
 import { ShoppingProvider } from "./contexts/shoppingContext";
 import { authMachine } from "./machines/authMachine";
 
@@ -13,7 +13,7 @@ function App() {
   const isLoggedIn = state.matches("loggedIn");
   return (
     <Stack>
-      <CollectionProvider>
+      <CollectionsProvider>
         <ShoppingProvider>
           <Header
             onLogin={() => send("LOGIN")}
@@ -23,7 +23,7 @@ function App() {
           {isLoggedIn ? <CheckList /> : <Unauthorized />}
           {isLoggedIn && <Footer />}
         </ShoppingProvider>
-      </CollectionProvider>
+      </CollectionsProvider>
     </Stack>
   );
 }

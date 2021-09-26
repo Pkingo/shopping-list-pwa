@@ -1,7 +1,7 @@
 import { createContext, FC, useContext, useEffect, useState } from "react";
 import { subscribeToShoppingDocuments } from "../db/shopping";
 import { ShoppingDocument } from "../types/ShoppingItem";
-import { useCollection } from "./CollectionSelector";
+import { useCollections } from "./Collections";
 
 type State = {
   documents: ShoppingDocument[];
@@ -13,17 +13,17 @@ const ShoppingContext = createContext<State>({
 
 export const ShoppingProvider: FC = ({ children }) => {
   const [documents, setDocuments] = useState<ShoppingDocument[]>([]);
-  const { collection } = useCollection();
+  const { selectedCollection } = useCollections();
   useEffect(() => {
-    if (!collection?.id) {
+    if (!selectedCollection?.id) {
       return;
     }
     const unsubscribe = subscribeToShoppingDocuments(
-      collection.id,
+      selectedCollection.id,
       setDocuments
     );
     return unsubscribe;
-  }, [collection]);
+  }, [selectedCollection]);
 
   return (
     <ShoppingContext.Provider value={{ documents }}>

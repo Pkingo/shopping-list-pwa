@@ -100,6 +100,18 @@ const theme = createTheme({
       primary: "#000000",
       secondary: "#FFFFFF",
     },
+    error: {
+      main: "#cf504a",
+    },
+    warning: {
+      main: "#FFC700",
+    },
+    info: {
+      main: "#DAD9D9",
+    },
+    success: {
+      main: "#25AD60",
+    },
   },
   components: {},
 });

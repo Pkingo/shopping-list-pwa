@@ -19,8 +19,8 @@ import {
 import { useState } from "react";
 import { styled } from "@material-ui/core/styles";
 import { AccountCircle } from "@material-ui/icons";
-import { useCollection } from "../contexts/CollectionSelector";
 import { SettingsModal } from "./Settings";
+import { useCollections } from "../contexts/Collections";
 
 const ProfileWrapper = styled("div")`
   margin-left: auto;
@@ -37,9 +37,9 @@ export const Header = ({
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [showSettings, setShowSettings] = useState(false);
-  const { collection, clearCollection } = useCollection();
+  const { selectedCollection, clearSelectedCollection } = useCollections();
   const isLarge = useMediaQuery("(min-width:500px)");
-  const name = collection?.data?.().name || "";
+  const name = selectedCollection?.data?.().name || "";
   const isOpen = Boolean(anchorEl);
 
   const onSettingsClicked = () => {
@@ -51,7 +51,7 @@ export const Header = ({
     onLogout();
   };
   const onSwitchListClicked = () => {
-    clearCollection();
+    clearSelectedCollection();
     setAnchorEl(null);
   };
   return (
