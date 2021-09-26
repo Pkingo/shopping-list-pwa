@@ -10,6 +10,7 @@ import {
   addDoc,
   serverTimestamp,
   deleteDoc,
+  getDocs,
 } from "firebase/firestore";
 import { ShoppingDocument, ShoppingItem } from "../types/ShoppingItem";
 const DATABASE_NAME = "shopping-list";
@@ -57,4 +58,19 @@ export const addShoppingItem = (name: string, collectionId: string) => {
 export const deleteShoppingItem = (documentId: string) => {
   const db = getFirestore();
   deleteDoc(doc(db, DATABASE_NAME, documentId));
+};
+
+export const deleteIsBoughtItems = async (collectionId: string) => {
+  const db = getFirestore();
+
+  const documentData = await getDocs(
+    query(
+      collection(db, DATABASE_NAME),
+      where("collectionId", "==", collectionId),
+      where("isBought", "==", true)
+    )
+  );
+  documentData.docs.forEach((doc) => {
+    deleteDoc(doc.ref);
+  });
 };

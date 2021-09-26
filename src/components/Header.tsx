@@ -79,16 +79,15 @@ export const Header = ({
               </IconButton>
               <Menu
                 id="menu-appbar"
-                anchorEl={anchorEl}
                 anchorOrigin={{
                   vertical: "top",
                   horizontal: "right",
                 }}
-                keepMounted
                 transformOrigin={{
                   vertical: "top",
                   horizontal: "right",
                 }}
+                anchorEl={anchorEl}
                 open={isOpen}
                 onClose={() => setAnchorEl(null)}
               >

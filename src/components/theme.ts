@@ -113,7 +113,21 @@ const theme = createTheme({
       main: "#25AD60",
     },
   },
-  components: {},
+  components: {
+    MuiMenu: {
+      defaultProps: {
+        anchorOrigin: {
+          vertical: "top",
+          horizontal: "right",
+        },
+        keepMounted: true,
+        transformOrigin: {
+          vertical: "top",
+          horizontal: "right",
+        },
+      },
+    },
+  },
 });
 
 export default theme;

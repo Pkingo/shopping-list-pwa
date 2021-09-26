@@ -1,8 +1,25 @@
-import { AppBar, Button, Fab, TextField, Toolbar } from "@material-ui/core";
+import {
+  AppBar,
+  Button,
+  DialogActions,
+  Fab,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  TextField,
+  Toolbar,
+} from "@material-ui/core";
 import { styled } from "@material-ui/styles";
-import { Add as AddIcon } from "@material-ui/icons";
-import { addShoppingItem } from "../db/shopping";
-import { useState } from "react";
+import {
+  Add as AddIcon,
+  MoreVert as MoreIcon,
+  Download as DownloadIcon,
+  DeleteSweep as DeleteIcon,
+} from "@material-ui/icons";
+import { addShoppingItem, deleteIsBoughtItems } from "../db/shopping";
+import { FormEvent, useState } from "react";
 import { CustomDialog } from "./CustomDialog";
 import { useCollections } from "../contexts/Collections";
 
@@ -17,21 +34,27 @@ const StyledFab = styled(Fab)({
 
 export const Footer = () => {
   const [showModal, setShowModal] = useState(false);
-  const [name, setName] = useState("");
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const isOpen = Boolean(anchorEl);
   const { selectedCollectionId } = useCollections();
   const closeModal = () => setShowModal(false);
-  const addItem = () => {
-    if (!selectedCollectionId) {
+  const onDeleteBoughtItems = () => {
+    deleteIsBoughtItems(selectedCollectionId);
+    setAnchorEl(null);
+  };
+  const handleNewListSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const listName = event.currentTarget["shopping-item-name"].value;
+    if (!selectedCollectionId || !listName.length) {
       return;
     }
-    addShoppingItem(name, selectedCollectionId);
-    setName("");
+    addShoppingItem(listName, selectedCollectionId);
     closeModal();
   };
   return (
     <>
       <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
-        <Toolbar sx={{ flexDirection: "column" }}>
+        <Toolbar sx={{ flexDirection: "column", justifyContent: "center" }}>
           <StyledFab
             onClick={() => setShowModal(true)}
             color="secondary"
@@ -39,11 +62,45 @@ export const Footer = () => {
           >
             <AddIcon />
           </StyledFab>
+          <IconButton
+            onClick={(event) => setAnchorEl(event.currentTarget)}
+            sx={{ alignSelf: "end" }}
+            color="inherit"
+          >
+            <MoreIcon />
+          </IconButton>
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorEl}
+            open={isOpen}
+            onClose={() => setAnchorEl(null)}
+          >
+            <MenuItem onClick={onDeleteBoughtItems}>
+              <ListItemIcon>
+                <DeleteIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Slet indkøbte ting</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={() => setAnchorEl(null)}>
+              <ListItemIcon>
+                <DownloadIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Hent fra Valdemarsro.dk</ListItemText>
+            </MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
-      <CustomDialog
-        action={
-          <>
+      <CustomDialog isOpen={showModal} onClose={closeModal}>
+        <form onSubmit={handleNewListSubmit}>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="shopping-item-name"
+            label="Navn"
+            fullWidth
+            variant="standard"
+          />
+          <DialogActions>
             <Button
               onClick={closeModal}
               size="small"
@@ -53,28 +110,15 @@ export const Footer = () => {
               Fortryd
             </Button>
             <Button
-              onClick={addItem}
               size="small"
               color="primary"
+              type="submit"
               variant="contained"
             >
               Tilføj
             </Button>
-          </>
-        }
-        isOpen={showModal}
-        onClose={closeModal}
-      >
-        <TextField
-          autoFocus
-          value={name}
-          onChange={(event) => setName(event.currentTarget.value)}
-          margin="dense"
-          id="shopping-item-name"
-          label="Navn"
-          fullWidth
-          variant="standard"
-        />
+          </DialogActions>
+        </form>
       </CustomDialog>
     </>
   );
