@@ -6,24 +6,34 @@ import theme from "./theme";
 interface SectionHeaderProps {
   title: string;
   Icon: SvgIconComponent;
+  noMarginBottom?: boolean;
 }
 
-export const SectionHeader: FC<SectionHeaderProps> = ({ title, Icon }) => {
+export const SectionHeader: FC<SectionHeaderProps> = ({
+  title,
+  Icon,
+  noMarginBottom,
+}) => {
   return (
     <Box
       display="flex"
-      alignItems="center"
-      sx={{ mb: 2 }}
+      alignItems="start"
+      sx={{ mb: noMarginBottom ? 0 : 2 }}
       height={theme.spacing(3.5)}
+      color="InfoText"
     >
-      <Box mr={1}>{<Icon color="info" fontSize="small" />}</Box>
+      <Box mr={1}>{<Icon color="inherit" fontSize="small" />}</Box>
       <Box display="flex" alignItems="baseline" width="100%">
-        <Box color="info" mr={1}>
-          <Typography sx={{ margin: 0, whiteSpace: "nowrap" }}>
+        <Box mr={1}>
+          <Typography
+            variant="h6"
+            color="inherit"
+            sx={{ margin: 0, whiteSpace: "nowrap" }}
+          >
             {title}
           </Typography>
         </Box>
-        <Box bgcolor="info" width="100%">
+        <Box bgcolor="inherit" width="100%">
           <Divider />
         </Box>
       </Box>

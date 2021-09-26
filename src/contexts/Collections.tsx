@@ -1,57 +1,56 @@
 import { createContext, FC, useContext, useEffect, useState } from "react";
 import { subscribeToCollectionDocuments } from "../db/collection";
-import { CollectionDocument } from "../types/Collection";
+import { Collection } from "../types/Collection";
 
 type State = {
-  collections: CollectionDocument[];
-  selectedCollection?: CollectionDocument;
+  collections: Map<string, Collection>;
+  selectedCollection?: Collection;
+  selectedCollectionId: string;
   clearSelectedCollection: () => void;
   selectCollection: (collectionId: string) => void;
+  hasSelectedCollection: boolean;
 };
 const defaultState: State = {
-  collections: [],
+  collections: new Map(),
+  selectedCollectionId: "",
   selectedCollection: undefined,
   clearSelectedCollection: () => {},
   selectCollection: () => {},
+  hasSelectedCollection: true,
 };
 const COLLECTION_ID_KEY = "COLLECTION_ID_KEY";
 
 const CollectionsContext = createContext<State>(defaultState);
 
 export const CollectionsProvider: FC = ({ children }) => {
-  const [collections, setCollections] = useState<State["collections"]>([]);
-  const [selectedCollection, setSelectedCollection] =
-    useState<State["selectedCollection"]>(undefined);
+  const [collections, setCollections] = useState<State["collections"]>(
+    new Map()
+  );
+  const [selectedCollectionId, setSelectedCollectionID] = useState<string>("");
   useEffect(() => {
     return subscribeToCollectionDocuments(setCollections);
   }, []);
-  useEffect(() => {
-    const selectedCollectionId = localStorage.getItem(COLLECTION_ID_KEY);
-    if (!selectedCollectionId) {
-      return;
-    }
-    setSelectedCollection(
-      collections.find((collection) => collection.id === selectedCollectionId)
-    );
-  }, [collections]);
+
   const clearSelectedCollection = () => {
     localStorage.removeItem(COLLECTION_ID_KEY);
-    setSelectedCollection(undefined);
+    setSelectedCollectionID("");
   };
   const selectCollection = (collectionId: string) => {
     localStorage.setItem(COLLECTION_ID_KEY, collectionId);
-    setSelectedCollection(
-      collections.find((collection) => collection.id === collectionId)
-    );
+    setSelectedCollectionID(collectionId);
   };
+  const selectedCollection = collections.get(selectedCollectionId);
+  const hasSelectedCollection = collections.has(selectedCollectionId);
 
   return (
     <CollectionsContext.Provider
       value={{
         collections,
         selectedCollection,
-        clearSelectedCollection,
+        selectedCollectionId,
+        hasSelectedCollection,
         selectCollection,
+        clearSelectedCollection,
       }}
     >
       {children}

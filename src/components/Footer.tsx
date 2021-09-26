@@ -18,13 +18,13 @@ const StyledFab = styled(Fab)({
 export const Footer = () => {
   const [showModal, setShowModal] = useState(false);
   const [name, setName] = useState("");
-  const { selectedCollection } = useCollections();
+  const { selectedCollectionId } = useCollections();
   const closeModal = () => setShowModal(false);
   const addItem = () => {
-    if (!selectedCollection?.id) {
+    if (!selectedCollectionId) {
       return;
     }
-    addShoppingItem(name, selectedCollection.id);
+    addShoppingItem(name, selectedCollectionId);
     setName("");
     closeModal();
   };

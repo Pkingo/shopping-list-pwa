@@ -13,17 +13,17 @@ const ShoppingContext = createContext<State>({
 
 export const ShoppingProvider: FC = ({ children }) => {
   const [documents, setDocuments] = useState<ShoppingDocument[]>([]);
-  const { selectedCollection } = useCollections();
+  const { selectedCollectionId } = useCollections();
   useEffect(() => {
-    if (!selectedCollection?.id) {
+    if (!selectedCollectionId) {
       return;
     }
     const unsubscribe = subscribeToShoppingDocuments(
-      selectedCollection.id,
+      selectedCollectionId,
       setDocuments
     );
     return unsubscribe;
-  }, [selectedCollection]);
+  }, [selectedCollectionId]);
 
   return (
     <ShoppingContext.Provider value={{ documents }}>

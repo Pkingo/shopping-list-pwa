@@ -14,14 +14,14 @@ import { Collection, CollectionDocument } from "../types/Collection";
 const DATABASE_NAME = "collection";
 
 export const subscribeToCollectionDocuments = (
-  callback: (items: CollectionDocument[]) => void
+  callback: (items: Map<string, Collection>) => void
 ) => {
   const db = getFirestore();
   const q = query(collection(db, DATABASE_NAME));
   const unsubscribe = onSnapshot(q, (querySnapshot) => {
-    const collectionDocuments: CollectionDocument[] = [];
+    const collectionDocuments = new Map<string, Collection>();
     querySnapshot.forEach((doc) => {
-      collectionDocuments.push(doc as CollectionDocument);
+      collectionDocuments.set(doc.id, doc.data() as Collection);
     });
     callback(collectionDocuments);
   });
@@ -42,9 +42,9 @@ export const updateCollection = (
   updateDoc(doc(db, DATABASE_NAME, documentId), data);
 };
 
-export const addCollection = (name: string) => {
+export const addCollection = async (name: string) => {
   const db = getFirestore();
-  addDoc(collection(db, DATABASE_NAME), { name });
+  return addDoc(collection(db, DATABASE_NAME), { name });
 };
 
 export const deleteCollection = async (documentId: string) => {

@@ -39,7 +39,7 @@ export const Header = ({
   const [showSettings, setShowSettings] = useState(false);
   const { selectedCollection, clearSelectedCollection } = useCollections();
   const isLarge = useMediaQuery("(min-width:500px)");
-  const name = selectedCollection?.data?.().name || "";
+  const name = selectedCollection?.name || "";
   const isOpen = Boolean(anchorEl);
 
   const onSettingsClicked = () => {

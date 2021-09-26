@@ -2,7 +2,7 @@ import { Button, TextField, Stack } from "@material-ui/core";
 import { Delete as DeleteIcon, Edit as EditIcon } from "@material-ui/icons";
 import { FormEvent } from "react";
 import { useCollections } from "../contexts/Collections";
-import { updateCollection } from "../db/collection";
+import { deleteCollection, updateCollection } from "../db/collection";
 import { CustomDialog } from "./CustomDialog";
 import { SectionHeader } from "./SectionHeader";
 
@@ -13,15 +13,19 @@ export const SettingsModal = ({
   isOpen: boolean;
   onClose: () => void;
 }) => {
-  const { selectedCollection } = useCollections();
-  const name = selectedCollection?.data().name || "";
+  const { selectedCollection, selectedCollectionId } = useCollections();
+  const name = selectedCollection?.name || "";
   const onRenameSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const value = event.currentTarget["rename"].value;
     if (!value || value === name) {
       return;
     }
-    updateCollection(selectedCollection?.id || "", { name: value });
+    updateCollection(selectedCollectionId, { name: value });
+    onClose();
+  };
+  const handleOnDelete = () => {
+    deleteCollection(selectedCollectionId);
     onClose();
   };
   return (
@@ -33,7 +37,7 @@ export const SettingsModal = ({
       <Stack gap={2}>
         <form onSubmit={onRenameSubmit}>
           <Stack>
-            <SectionHeader Icon={EditIcon} title="Liste navn" />
+            <SectionHeader noMarginBottom Icon={EditIcon} title="Liste navn" />
             <TextField
               id="rename"
               autoFocus
@@ -54,7 +58,7 @@ export const SettingsModal = ({
         </form>
         <Stack>
           <SectionHeader Icon={DeleteIcon} title="Slet liste" />
-          <Button color="error" variant="outlined">
+          <Button onClick={handleOnDelete} color="error" variant="outlined">
             Slet
           </Button>
         </Stack>
