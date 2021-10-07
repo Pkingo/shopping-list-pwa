@@ -8,7 +8,6 @@ import {
   updateDoc,
   doc,
   addDoc,
-  serverTimestamp,
   deleteDoc,
   getDocs,
 } from "firebase/firestore";
@@ -31,7 +30,10 @@ export const subscribeToShoppingDocuments = (
     querySnapshot.forEach((doc) => {
       shoppingDocuments.push(doc as ShoppingDocument);
     });
-    callback(shoppingDocuments);
+    const sortedShoppingDocuments = shoppingDocuments.sort(
+      (a, b) => Number(b.data().creationDate) - Number(a.data().creationDate)
+    );
+    callback(sortedShoppingDocuments);
   });
   return unsubscribe;
 };
@@ -49,11 +51,14 @@ export const addShoppingItem = (name: string, collectionId: string) => {
   const itemToAdd: ShoppingItem = {
     name,
     collectionId,
-    creationDate: serverTimestamp().toString(),
+    creationDate: Math.floor(Date.now() / 1000),
     isBought: false,
   };
-  addDoc(collection(db, DATABASE_NAME), itemToAdd);
+  return addDoc(collection(db, DATABASE_NAME), itemToAdd);
 };
+
+export const addShoppingItems = (names: string[], collectionId: string) =>
+  Promise.all(names.map((name) => addShoppingItem(name, collectionId)));
 
 export const deleteShoppingItem = (documentId: string) => {
   const db = getFirestore();

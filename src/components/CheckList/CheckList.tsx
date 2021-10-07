@@ -17,12 +17,11 @@ export const CheckList = () => {
     <>
       <List>
         {documents.map((document) => (
-          <>
-            <CheckListItem
-              shoppingDocument={document}
-              onLongClick={openModal}
-            />
-          </>
+          <CheckListItem
+            key={document.id}
+            shoppingDocument={document}
+            onLongClick={openModal}
+          />
         ))}
       </List>
       <CheckListItemModal

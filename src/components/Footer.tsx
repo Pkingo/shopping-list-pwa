@@ -15,13 +15,13 @@ import { styled } from "@material-ui/styles";
 import {
   Add as AddIcon,
   MoreVert as MoreIcon,
-  Download as DownloadIcon,
   DeleteSweep as DeleteIcon,
 } from "@material-ui/icons";
 import { addShoppingItem, deleteIsBoughtItems } from "../db/shopping";
 import { FormEvent, useState } from "react";
 import { CustomDialog } from "./CustomDialog";
 import { useCollections } from "../contexts/Collections";
+import { RecipeScraperMenuItem } from "./recipeScraper";
 
 const StyledFab = styled(Fab)({
   position: "absolute",
@@ -60,7 +60,7 @@ export const Footer = () => {
             color="secondary"
             aria-label="add"
           >
-            <AddIcon />
+            <AddIcon color="info" />
           </StyledFab>
           <IconButton
             onClick={(event) => setAnchorEl(event.currentTarget)}
@@ -81,12 +81,7 @@ export const Footer = () => {
               </ListItemIcon>
               <ListItemText>Slet indkøbte ting</ListItemText>
             </MenuItem>
-            <MenuItem onClick={() => setAnchorEl(null)}>
-              <ListItemIcon>
-                <DownloadIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Hent fra Valdemarsro.dk</ListItemText>
-            </MenuItem>
+            <RecipeScraperMenuItem onOpen={() => setAnchorEl(null)} />
           </Menu>
         </Toolbar>
       </AppBar>

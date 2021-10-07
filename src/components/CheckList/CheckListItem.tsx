@@ -20,7 +20,7 @@ export const CheckListItem: FC<{
   const labelId = `checkbox-list-label-${name}`;
 
   return (
-    <ListItem disablePadding key={shoppingDocument.id}>
+    <ListItem disablePadding>
       <ListItemButton
         {...bind}
         onClick={() =>

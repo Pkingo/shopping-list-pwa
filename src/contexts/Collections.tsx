@@ -18,7 +18,7 @@ const defaultState: State = {
   selectCollection: () => {},
   hasSelectedCollection: true,
 };
-const COLLECTION_ID_KEY = "COLLECTION_ID_KEY";
+export const COLLECTION_ID_KEY = "COLLECTION_ID_KEY";
 
 const CollectionsContext = createContext<State>(defaultState);
 

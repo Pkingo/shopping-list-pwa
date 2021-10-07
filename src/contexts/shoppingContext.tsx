@@ -22,6 +22,7 @@ export const ShoppingProvider: FC = ({ children }) => {
       selectedCollectionId,
       setDocuments
     );
+
     return unsubscribe;
   }, [selectedCollectionId]);
 
